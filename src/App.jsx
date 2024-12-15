@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import "./App.css";
 import GoogleMap from "./map/GoogleMap";
 import NavBar from "./nav/NavBar";
@@ -9,79 +10,96 @@ import HazardList from "./hazard/HazardList";
 import HazardForm from "./hazard/HazardForm";
 import SOSForm from "./hazard/SOSForm";
 import Login from "./login/Login";
+import Registration from "./login/Registration";
+import ElevatedRegistration from "./login/ElevatedRegistration";
 
 function App() {
-  const [page, setPage] = useState("home");
   const [login, setLogin] = useState(false);
+  const [loading, setLoading] = useState(true); // Loading state
   const [idSelected, setIdSelected] = useState(null);
   const [mapCenter, setMapCenter] = useState({
     lat: 11.234058,
     lng: 76.0365978,
   });
+  const [latandlng, setLatAndLng] = useState({});
+
   useEffect(() => {
-    // Check if there's a "user" key in localStorage
-    const user = localStorage.getItem('user');
-    
-    // If a user is found, set login to true
+    const user = JSON.parse(localStorage.getItem("user"));
+
     if (user) {
       setLogin(true);
     } else {
       setLogin(false);
     }
+    setLoading(false); // Set loading to false after checking localStorage
   }, []);
-  const [latandlng, setLatAndLng] = useState({});
+
+  if (loading) {
+    // Optionally render a loader or return null while checking login state
+    return <div>Loading...</div>;
+  }
+
   return (
-    <>
-      {login ? (
+    <Router>
+      {!login ? (
+        <Routes>
+          <Route path="/login" element={<Login setLogin={setLogin} />} />
+          <Route path="/register" element={<Registration setLogin={setLogin} />} />
+          <Route path="*" element={<Navigate to="/login" replace={true} />} />
+        </Routes>
+      ) : (
         <div className="flex h-screen w-screen">
-          <NavBar setPage={setPage} />
-          <div className="flex flex-row fixed mt-20  h-full pb-24 pr-2 pl-2 w-full">
+          <NavBar setLogin={setLogin} />
+          <div className="flex flex-row fixed mt-20 h-full pb-24 pr-2 pl-2 w-full">
             <div className="flex flex-col gap-1 p-2 w-9/12">
               <div className="flex h-2/3 w-full border">
                 <GoogleMap
                   mapCenter={mapCenter}
                   setMapCenter={setMapCenter}
                   setLatAndLng={setLatAndLng}
-                  setPage={setPage}
                   setIdSelected={setIdSelected}
                 />
               </div>
-              {page == "camp" && <CampDetails idSelected={idSelected} />}
-              {page == "home" && <CampDetails idSelected={idSelected} />}
-              {page == "hazard" && <HazardForm latandlng={latandlng} />}
-              {page == "adminCamp" && (
-                <MoveToCampForm
-                  latandlng={latandlng}
-                  setIdSelected={setIdSelected}
-                  setMapCenter={setMapCenter}
+              <Routes>
+                <Route path="/camp" element={<CampDetails idSelected={idSelected} />} />
+                <Route path="/" element={<Navigate to="/camp" replace={true} />} />
+                <Route path="/hazard" element={<HazardForm latandlng={latandlng} />} />
+                <Route path="/admin" element={<ElevatedRegistration setLogin={setLogin} />} />
+
+                <Route
+                  path="/adminCamp"
+                  element={
+                    <MoveToCampForm
+                      latandlng={latandlng}
+                      setIdSelected={setIdSelected}
+                      setMapCenter={setMapCenter}
+                    />
+                  }
                 />
-              )}
-              {page == "sos" && <SOSForm latandlng={latandlng} />}
+                <Route path="/sos" element={<SOSForm latandlng={latandlng} />} />
+              </Routes>
             </div>
-            <div className="flex w-3/12 ">
-              {page == "camp" && (
-                <CampList
-                  latandlng={latandlng}
-                  setMapCenter={setMapCenter}
-                  setIdSelected={setIdSelected}
+            <div className="flex w-3/12">
+              <Routes>
+                <Route
+                  path="/camp"
+                  element={
+                    <CampList
+                      latandlng={latandlng}
+                      setMapCenter={setMapCenter}
+                      setIdSelected={setIdSelected}
+                    />
+                  }
                 />
-              )}
-              {page == "home" && (
-                <CampList
-                  latandlng={latandlng}
-                  setMapCenter={setMapCenter}
-                  setIdSelected={setIdSelected}
-                />
-              )}
-              {page == "sos" && <HazardList latandlng={latandlng} />}
-              {page == "hazard" && <HazardList latandlng={latandlng} />}
+                <Route path="/hazard" element={<HazardList latandlng={latandlng} />} />
+                <Route path="/registeradmin" element={<HazardList latandlng={latandlng} />} />
+                <Route path="/sos" element={<HazardList latandlng={latandlng} />} />
+              </Routes>
             </div>
           </div>
         </div>
-      ) : (
-        <Login setLogin={setLogin} />
       )}
-    </>
+    </Router>
   );
 }
 

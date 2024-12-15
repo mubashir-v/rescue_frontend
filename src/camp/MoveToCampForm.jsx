@@ -8,7 +8,7 @@ function MoveToCampForm({ setMapCenter, setIdSelected }) {
   const [persons, setPersons] = useState([]);
   const [selectedCampId, setSelectedCampId] = useState(null);
   const [selectedPersons, setSelectedPersons] = useState([]);
-  
+
   // Handle click for selecting persons
   const handlePersonClick = (index) => {
     const updatedPersons = [...persons];
@@ -86,6 +86,11 @@ function MoveToCampForm({ setMapCenter, setIdSelected }) {
     try {
       const response = await axios.post("http://localhost:3000/api/move-persons-to-camp", data);
       console.log("Response from backend:", response.data);
+
+      // Remove moved persons from the list
+      setPersons((prev) => prev.filter((person) => !selectedPersons.includes(person._id)));
+      setSelectedPersons([]); // Clear selected persons
+
       // Optionally handle the response here (e.g., show success message)
     } catch (error) {
       console.error("Error moving persons to camp:", error);
@@ -113,7 +118,7 @@ function MoveToCampForm({ setMapCenter, setIdSelected }) {
       </div>
 
       {/* Camp List */}
-      <div className="flex h-full w-2/12 items-center justify-center"   onClick={handleSubmit}>
+      <div className="flex h-full w-2/12 items-center justify-center" onClick={handleSubmit}>
         <div className="flex flex-col w-full items-center">
           <FaCircleArrowRight className="text-xl text-green-800 cursor-pointer" />
           <p className="text-[10px] text-gray-400">Move to Camp</p>
@@ -143,7 +148,6 @@ function MoveToCampForm({ setMapCenter, setIdSelected }) {
       </div>
 
       {/* Submit Button */}
-    
     </div>
   );
 }

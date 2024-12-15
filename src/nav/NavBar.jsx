@@ -1,6 +1,14 @@
-import React from "react";
+import { NavLink } from "react-router-dom";
 
-function NavBar({setPage}) {
+function NavBar({setLogin}) {
+
+  const userType = JSON.parse(localStorage.getItem("userType")).userType;
+
+  const handleLogout = () => {
+    localStorage.removeItem("user");
+    localStorage.removeItem("userType");
+    setLogin(false);
+  };
   return (
     <nav className="bg-white dark:bg-gray-900 fixed w-full z-20 top-0 start-0 border-b border-gray-200 dark:border-gray-600">
       <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
@@ -19,10 +27,13 @@ function NavBar({setPage}) {
         </a>
         <div className="flex md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse">
           <button
+            onClick={() => {
+              handleLogout();
+            }}
             type="button"
             className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
           >
-            Get started
+            Log Out
           </button>
           <button
             data-collapse-toggle="navbar-sticky"
@@ -55,60 +66,96 @@ function NavBar({setPage}) {
         >
           <ul className="flex flex-col p-4 md:p-0 mt-4 font-medium border border-gray-100 rounded-lg bg-gray-50 md:space-x-8 rtl:space-x-reverse md:flex-row md:mt-0 md:border-0 md:bg-white dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700">
             <li>
-              <a onClick={()=>{
-                setPage("home")
-              }}
-                href="#"
-                className="block py-2 px-3 text-white bg-blue-700 rounded md:bg-transparent md:text-blue-700 md:p-0 md:dark:text-blue-500"
-                aria-current="page"
+              <NavLink
+                to="/camp"
+                className={({ isActive }) =>
+                  `block py-2 px-3 rounded md:p-0 ${
+                    isActive
+                      ? "text-white bg-blue-700 md:bg-transparent md:text-blue-700 md:dark:text-blue-500"
+                      : "text-gray-900 hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent"
+                  }`
+                }
               >
                 Home
-              </a>
+              </NavLink>
             </li>
             <li>
-              <a
-               onClick={()=>{
-                setPage("hazard")
-              }}
-                href="#"
-                className="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 md:dark:hover:text-blue-500 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700"
+              <NavLink
+                to="/hazard"
+                className={({ isActive }) =>
+                  `block py-2 px-3 rounded md:p-0 ${
+                    isActive
+                      ? "text-white bg-blue-700 md:bg-transparent md:text-blue-700 md:dark:text-blue-500"
+                      : "text-gray-900 hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent"
+                  }`
+                }
               >
                 Hazard
-              </a>
+              </NavLink>
             </li>
             <li>
-              <a
-               onClick={()=>{
-                setPage("camp")
-              }}
-                href="#"
-                className="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 md:dark:hover:text-blue-500 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700"
+              <NavLink
+                to="/camp"
+                className={({ isActive }) =>
+                  `block py-2 px-3 rounded md:p-0 ${
+                    isActive
+                      ? "text-white bg-blue-700 md:bg-transparent md:text-blue-700 md:dark:text-blue-500"
+                      : "text-gray-900 hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent"
+                  }`
+                }
               >
                 Camp
-              </a>
+              </NavLink>
             </li>
             <li>
-              <a
-               onClick={()=>{
-                setPage("sos")
-              }}
-                href="#"
-                className="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 md:dark:hover:text-blue-500 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700"
+              <NavLink
+                to="/sos"
+                className={({ isActive }) =>
+                  `block py-2 px-3 rounded md:p-0 ${
+                    isActive
+                      ? "text-white bg-blue-700 md:bg-transparent md:text-blue-700 md:dark:text-blue-500"
+                      : "text-gray-900 hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent"
+                  }`
+                }
               >
                 SOS
-              </a>
+              </NavLink>
             </li>
+            {(userType === 'admin' ||userType === 'superAdmin' ) && 
+            
             <li>
-              <a
-               onClick={()=>{
-                setPage("adminCamp")
-              }}
-                href="#"
-                className="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 md:dark:hover:text-blue-500 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700"
+              <NavLink
+                to="/adminCamp"
+                className={({ isActive }) =>
+                  `block py-2 px-3 rounded md:p-0 ${
+                    isActive
+                      ? "text-white bg-blue-700 md:bg-transparent md:text-blue-700 md:dark:text-blue-500"
+                      : "text-gray-900 hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent"
+                  }`
+                }
               >
                 Camp Operation
-              </a>
+              </NavLink>
             </li>
+            
+            }
+            {userType == 'superAdmin' &&
+            
+            <li>
+            <NavLink
+              to="/admin"
+              className={({ isActive }) =>
+                `block py-2 px-3 rounded md:p-0 ${
+                  isActive
+                    ? "text-white bg-blue-700 md:bg-transparent md:text-blue-700 md:dark:text-blue-500"
+                    : "text-gray-900 hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent"
+                }`
+              }
+            >
+              Super Admin
+            </NavLink>
+          </li>}
+          
           </ul>
         </div>
       </div>
